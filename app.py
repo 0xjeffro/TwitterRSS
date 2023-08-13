@@ -2,6 +2,9 @@ import requests
 import feedparser
 from feedgen.feed import FeedGenerator
 from flask import Flask, request, make_response, render_template
+from cacheout import LFUCache
+
+cache = LFUCache()
 
 
 def get_twitter_embed(url):
@@ -27,8 +30,12 @@ def main(user_id):
             link = entry['link']
             # description = entry['description']
             pubDate = entry['published']
-
-            embed = get_twitter_embed(link)
+            if cache.get(link):
+                # print("Cache hit")
+                embed = cache.get(link)
+            else:
+                embed = get_twitter_embed(link)
+                cache.set(link, embed)
             items.append({
                 'title': title,
                 'link': link,

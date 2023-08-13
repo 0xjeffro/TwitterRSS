@@ -1,5 +1,6 @@
 requests==2.26.0
 feedgen==0.9.0
 feedparser==6.0.10
-flask==2.2
+flask
 gunicorn
+cacheout
